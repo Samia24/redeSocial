@@ -1,111 +1,111 @@
-class Usuario{
-    private _idUsuario: number;
-    private _email: string;
-    private _apelido: string;
-    private _documentoCPF: number;
+import { UsuarioInvalido, PublicacaoInvalida, EmailInvalido, InteracaoImpossibilitada } from "./excecoes";
+import { Usuario } from "./usuario";
+import { Publicacao, PublicacaoAvancada } from "./publicacao";
+import { ordenarDecrescente, listarPublicacoes } from "./methodsUtils";
+import { TipoInteracao, Interacao } from "./interacao";
 
-    constructor(idUsuario: number, email: string, apelido: string, documentoCPF: number){
-        this._idUsuario = idUsuario;
-        this._email = email;
-        this._apelido = apelido;
-        this._documentoCPF = documentoCPF;
-    }
+class RedeSocial{
+    private _usuarios: Usuario[] = [];
+    private _publicacoes: Publicacao[] = [];
 
-    get idUsuario(): number{
-        return this._idUsuario;
-    }
-
-    get email(): string{
-        return this._email;
-    }
-
-    get apelido(): string{
-        return this._apelido;
-    }
-
-    get documentoCPF(): number{
-        return this._documentoCPF;
-    }
-}
-
-class Publicacao extends Usuario{
-    private _idPubli: number;
-    private _conteudo: string;
-    private _dataHora: Date;
-
-    constructor(idUsuario: number, email: string, apelido: string, documentoCPF: number, idPubli: number, conteudo: string, dataHora: Date){
-        super(idUsuario, email, apelido, documentoCPF);
-        this._idPubli = idPubli;
-        this._conteudo = conteudo;
-        this._dataHora = dataHora;
-    }
-
-    get idPubli(): number{
-        return this._idPubli;
-    }
-
-    get conteudo(): string{
-        return this._conteudo;
-    }
-
-    get dataHora(): Date{
-        return this._dataHora;
-    }
-
-}
-
-class Interacao extends Publicacao{
-    private _idInteracao: number;
-    private _tipoInteracao: number;
-    private _dataHoraInteracao: Date;
-
-    constructor(idUsuario: number, email: string, apelido: string, documentoCPF: number, idPubli: number, conteudo: string, dataHora: Date, idInteracao: number, tipoInteracao: number, dataHoraInteracao: Date){
-        super(idUsuario, email, apelido, documentoCPF, idPubli, conteudo, dataHora);
-        this._idInteracao = idInteracao;
-        this._tipoInteracao = tipoInteracao;
-        this._dataHoraInteracao = dataHoraInteracao;
+    constructor(usuarios: Usuario[], publicacoes: Publicacao[]){
+        this._usuarios = usuarios;
+        this._publicacoes = publicacoes;
 
     }
 
-    get idInteracao(): number{
-        return this._idInteracao;
-    }
-
-    get tipoInteracao(): number{
-        return this._tipoInteracao;
-    }
-
-    get dataInteracao(): Date{
-        return this._dataHoraInteracao;
+    validarUsuario(idUsuario: number, email: string): boolean {
+        for (let i = 0; i < this._usuarios.length; i++) {
+            if (this._usuarios[i].idUsuario === idUsuario && this._usuarios[i].email === email) {
+                return true;
+            }
+        }
+        throw new UsuarioInvalido("\n> Usuario e/ou e-mail invalidos !!\n");
     }
     
-    curtir(){
-
-    }
-
-    descurtir(){
-
-    }
-
-    riso(){
-
-    }
-
-    surpresa(){
-
-    }
-      
-}
-
-class PublicacaoAvancada extends Publicacao{
-    private _interacoes: Interacao[];
-    
-    constructor(idUsuario: number, email: string, apelido: string, documentoCPF: number, idPubli: number, conteudo: string, dataHora: Date, interacoes: Interacao[] ){
-        super(idUsuario, email, apelido, documentoCPF, idPubli, conteudo, dataHora);
-        this._interacoes = interacoes; 
+    incluirUsuario(usuario: Usuario): void{
+        if(this.validarUsuario(usuario.idUsuario, usuario.email)){
+            this._usuarios.push(usuario);
+        }
     }
     
-    get interacoes(): Interacao[]{
-        return this._interacoes;
+    consultarUsuarioId(idUsuario: number): Usuario {
+        for (let i = 0; i < this._usuarios.length; i++) {
+            if (this._usuarios[i].idUsuario === idUsuario) {
+                return this._usuarios[i];
+            }
+        }
+        throw new UsuarioInvalido("\n> Usuario nao existente !!\n");
     }
+    
+    consultarUsuarioEmail(email: string): Usuario {
+        for (let i = 0; i < this._usuarios.length; i++) {
+            if (this._usuarios[i].email === email) {
+                return this._usuarios[i];
+            }
+        }
+        throw new EmailInvalido("\n> E-mail nao existente !!\n");
+    }
+    
+    validarPubli(idPubli: number): boolean{
+        for (let i = 0; i < this._publicacoes.length; i++) {
+            if (this._publicacoes[i].idPublicacao === idPubli) {
+                return true;
+            }
+        }
+        throw new PublicacaoInvalida("\n> Publicacao invalida !!\n");
+    }
+    
+    incluirPubli(publicacao: Publicacao): void{
+        if(this.validarPubli(publicacao.idPublicacao)){
+            this._publicacoes.push(publicacao);
+        }
+
+    }
+
+    consultarPubli(idPubli: number): Publicacao {
+        for (let i = 0; i < this._publicacoes.length; i++) {
+            if (this._publicacoes[i].idPublicacao === idPubli) {
+                return this._publicacoes[i];
+            }
+        }
+        throw new PublicacaoInvalida("\n> Publicacao nao existente !!\n");
+    }
+
+    exibirPublicacoesOrdenadas(): void {
+        listarPublicacoes(this._publicacoes);
+
+    }
+
+    buscarPublicacoesPorUsuario(usuario: Usuario): Publicacao[]{
+        const publicacoesUsuario = this._publicacoes.filter((publicacaoAtual) => publicacaoAtual.usuario.idUsuario === usuario.idUsuario);
+
+        return ordenarDecrescente(publicacoesUsuario);
+    }
+
+    exibirPublicacoesUsuario(usuario: Usuario): void {
+        const publisUsuarios = this.buscarPublicacoesPorUsuario(usuario);
+        listarPublicacoes(publisUsuarios);
+    }
+
+    reagir(usuario: Usuario, publicacao: Publicacao, tipoInteracao: TipoInteracao): void{
+        if(publicacao !instanceof PublicacaoAvancada){
+            throw new InteracaoImpossibilitada(`\nReação só é possível em publicações avançadas !`);
+        }
+        const interacao = new Interacao(publicacao, usuario, tipoInteracao);
+        //Força a publicação ser Publicação Avançada
+        (<PublicacaoAvancada>publicacao).adicionarInteracao(interacao);
+    }
+
+    get usuarios(): Usuario[]{
+        return this._usuarios;
+    }
+
+    get publicacoes(): Publicacao[]{
+        return this._publicacoes;
+    }
+
+    
 }
+
+export { RedeSocial };
