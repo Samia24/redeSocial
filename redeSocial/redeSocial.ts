@@ -1,4 +1,4 @@
-import { UsuarioInvalido, PublicacaoInvalida, EmailInvalido, InteracaoImpossibilitada } from "./excecoes";
+import { UsuarioInvalido, PublicacaoInvalida, EmailInvalido, InteracaoImpossibilitada, EstadoInvalido, PublicacaoNaoAvancada } from "./excecoes";
 import { Usuario } from "./usuario";
 import { Publicacao, PublicacaoAvancada } from "./publicacao";
 import { ordenarDecrescente, listarPublicacoes } from "./methodsUtils";
@@ -8,28 +8,23 @@ class RedeSocial{
     private _usuarios: Usuario[] = [];
     private _publicacoes: Publicacao[] = [];
 
-    constructor(usuarios: Usuario[], publicacoes: Publicacao[]){
-        this._usuarios = usuarios;
-        this._publicacoes = publicacoes;
 
-    }
-
-    validarUsuario(idUsuario: number, email: string): boolean {
+    validarUsuario(idUsuario: string, email: string): boolean {
         for (let i = 0; i < this._usuarios.length; i++) {
             if (this._usuarios[i].idUsuario === idUsuario && this._usuarios[i].email === email) {
-                return true;
+                throw new UsuarioInvalido("\n> Usuario e/ou e-mail já existentes !!\n");
             }
         }
-        throw new UsuarioInvalido("\n> Usuario e/ou e-mail invalidos !!\n");
+        return true;
     }
     
     incluirUsuario(usuario: Usuario): void{
-        if(this.validarUsuario(usuario.idUsuario, usuario.email)){
+        if((this.validarUsuario(usuario.idUsuario, usuario.email))){
             this._usuarios.push(usuario);
         }
     }
     
-    consultarUsuarioId(idUsuario: number): Usuario {
+    consultarUsuarioId(idUsuario: string): Usuario {
         for (let i = 0; i < this._usuarios.length; i++) {
             if (this._usuarios[i].idUsuario === idUsuario) {
                 return this._usuarios[i];
@@ -47,7 +42,7 @@ class RedeSocial{
         throw new EmailInvalido("\n> E-mail nao existente !!\n");
     }
     
-    validarPubli(idPubli: number): boolean{
+    validarPubli(idPubli: string): boolean{
         for (let i = 0; i < this._publicacoes.length; i++) {
             if (this._publicacoes[i].idPublicacao === idPubli) {
                 return true;
@@ -63,7 +58,7 @@ class RedeSocial{
 
     }
 
-    consultarPubli(idPubli: number): Publicacao {
+    consultarPubli(idPubli: string): Publicacao {
         for (let i = 0; i < this._publicacoes.length; i++) {
             if (this._publicacoes[i].idPublicacao === idPubli) {
                 return this._publicacoes[i];
@@ -88,14 +83,32 @@ class RedeSocial{
         listarPublicacoes(publisUsuarios);
     }
 
-    reagir(usuario: Usuario, publicacao: Publicacao, tipoInteracao: TipoInteracao): void{
-        if(publicacao !instanceof PublicacaoAvancada){
-            throw new InteracaoImpossibilitada(`\nReação só é possível em publicações avançadas !`);
+    reagir(usuario: Usuario, publicacao: Publicacao, tipoInteracao: TipoInteracao): void {
+        if (!(publicacao instanceof PublicacaoAvancada)) {
+            throw new InteracaoImpossibilitada('\nReação só é possível em publicações avançadas!');
         }
+        
         const interacao = new Interacao(publicacao, usuario, tipoInteracao);
-        //Força a publicação ser Publicação Avançada
-        (<PublicacaoAvancada>publicacao).adicionarInteracao(interacao);
+        publicacao.adicionarInteracao(interacao);
     }
+
+    alterarEstado(novoEstado: boolean, idPublicacao: string){
+        let publicacao = this.consultarPubli(idPublicacao);
+        if(novoEstado === publicacao.estadoAtual){
+            throw new EstadoInvalido('\nPublicacao ja encontra-se nesse estado !!');
+        }
+        publicacao.setEstadoAtual = novoEstado;
+    }
+
+    exibirAnalise(idPublicacao: string){
+        let publicacao = this.consultarPubli(idPublicacao);
+        if(!(publicacao instanceof PublicacaoAvancada)){
+            throw new PublicacaoNaoAvancada('\nNão é uma publicacao avancada, nao tem interacoes !')
+        }
+        let analise = publicacao.analisarEngajamento();
+        console.log(analise);
+    }
+
 
     get usuarios(): Usuario[]{
         return this._usuarios;

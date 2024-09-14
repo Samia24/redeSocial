@@ -1,17 +1,21 @@
 class Usuario{
-    private _idUsuario: number;
+    private _idUsuario: string;
     private _email: string;
     private _apelido: string;
-    private _documentoCPF: number;
+    private _documentoCPF: string;
 
-    constructor(idUsuario: number, email: string, apelido: string, documentoCPF: number){
+    constructor(idUsuario: string, email: string, apelido: string, documentoCPF: string){
         this._idUsuario = idUsuario;
         this._email = email;
         this._apelido = apelido;
         this._documentoCPF = documentoCPF;
     }
 
-    get idUsuario(): number{
+    get toString(): string{
+        return `\nID Usuario: ${this._idUsuario} \nE-mail: ${this._email} \nApelido: ${this._apelido} \nCPF: ${this._documentoCPF}`;
+    }
+
+    get idUsuario(): string{
         return this._idUsuario;
     }
 
@@ -23,7 +27,7 @@ class Usuario{
         return this._apelido;
     }
 
-    get documentoCPF(): number{
+    get documentoCPF(): string{
         return this._documentoCPF;
     }
 }

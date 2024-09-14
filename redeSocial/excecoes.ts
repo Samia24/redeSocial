@@ -34,4 +34,15 @@ class InteracaoImpossibilitada extends AplicacaoError{
     }
 }
 
-export{AplicacaoError, UsuarioInvalido, PublicacaoInvalida, EmailInvalido, InteracaoExistente, InteracaoImpossibilitada};
+class EstadoInvalido extends AplicacaoError{
+    constructor(message: string) {
+        super(message);
+    }
+}
+class PublicacaoNaoAvancada extends AplicacaoError{
+    constructor(message: string) {
+        super(message);
+    }
+}
+
+export{AplicacaoError, UsuarioInvalido, PublicacaoInvalida, EmailInvalido, InteracaoExistente, InteracaoImpossibilitada, EstadoInvalido, PublicacaoNaoAvancada};
