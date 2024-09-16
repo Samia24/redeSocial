@@ -1,9 +1,9 @@
 import * as readlineSync from 'readline-sync';
 import * as fs from 'fs';
 import { RedeSocial } from './redeSocial';
-import { AplicacaoError, InteracaoImpossibilitada, PublicacaoNaoAvancada, UsuarioInvalido } from './excecoes';
+import { AplicacaoError, InteracaoImpossibilitada, PublicacaoNaoAvancada } from './excecoes';
 import { Usuario } from './usuario';
-import { limparTela, listarPublicacoes, listarPublicacoesArquivadas, listarPublicacoesAtivas, listarUsuarios } from './methodsUtils';
+import { limparTela, listarPublicacoes, listarUsuarios } from './methodsUtils';
 import { Publicacao, PublicacaoAvancada } from './publicacao';
 
 class AppRedeSocial{
@@ -112,7 +112,7 @@ class AppRedeSocial{
             '🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺🔺\n' + 
             '\n  Por favor, escolha uma opcao abaixo:\n' +
             '-------------------------------------\n');
-        console.log('1️⃣ - Cadastrar novo usuario\n' + 
+        console.log('1️⃣  - Cadastrar novo usuario\n' + 
             '2️⃣  - Listar usuarios\n' + 
             '3️⃣  - Adicionar nova publicacao\n' + 
             '4️⃣  - Listar publicacoes por usuario\n' + 
@@ -139,7 +139,7 @@ class AppRedeSocial{
         let email = this._input.question('Informe seu e-mail: ');
         let apelido = this._input.question('Informe seu apelido: ');
         let cpf = this._input.question('Informe seu CPF (ex: 22222222222): ');
-
+        
         let novoUsuario = new Usuario(email, apelido, cpf);
 
         this._redeSocial.incluirUsuario(novoUsuario);
