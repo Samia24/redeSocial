@@ -10,6 +10,9 @@ Este é um projeto de Rede Social desenvolvido para fins de aprendizado. A aplic
 - Edição de publicações existentes
 - Interações com curtidas nas publicações
 - Validação de usuários por ID
+- Ativar e Arquivar publicações
+- Mostrar publicações
+- Mostrar Usuários
 - Análise de engajamento das publicações
 
 ## Arquivo de Vídeo
