@@ -11,18 +11,19 @@ enum TipoInteracao{
 class Interacao{
     private _publicacao: Publicacao;
     private _usuario: Usuario;
-    private _idInteracao: string;
+    private static _contadorId: number = 1;
+    private _idInteracao: number;
     private _tipoInteracao: TipoInteracao;
     private _dataHoraInteracao: Date = new Date();
 
     constructor(publicacao: Publicacao, usuario: Usuario, tipoInteracao: TipoInteracao){
         this._publicacao = publicacao;
         this._usuario = usuario;
-        this._idInteracao = Math.random().toString(36).substring(2, 9);
+        this._idInteracao = Interacao._contadorId++;
         this._tipoInteracao = tipoInteracao;
     }
 
-    get idInteracao(): string{
+    get idInteracao(): number{
         return this._idInteracao;
     }
 

@@ -16,7 +16,7 @@ class EmailInvalido extends AplicacaoError{
     }
 }
 
-class PublicacaoInvalida extends AplicacaoError{
+class PublicacaoExistente extends AplicacaoError{
     constructor(message: string) {
         super(message);
     }
@@ -45,4 +45,22 @@ class PublicacaoNaoAvancada extends AplicacaoError{
     }
 }
 
-export{AplicacaoError, UsuarioInvalido, PublicacaoInvalida, EmailInvalido, InteracaoExistente, InteracaoImpossibilitada, EstadoInvalido, PublicacaoNaoAvancada};
+class PublicacaoDesativada extends AplicacaoError{
+    constructor(message: string) {
+        super(message);
+    }
+}
+
+class PublicacoesInexistentes extends AplicacaoError{
+    constructor(message: string) {
+        super(message);
+    }
+}
+
+class UsuariosInexistentes extends AplicacaoError{
+    constructor(message: string) {
+        super(message);
+    }
+}
+
+export{AplicacaoError, UsuarioInvalido, PublicacaoExistente, EmailInvalido, InteracaoExistente, InteracaoImpossibilitada, EstadoInvalido, PublicacaoNaoAvancada, PublicacaoDesativada, PublicacoesInexistentes, UsuariosInexistentes};

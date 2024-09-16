@@ -1,7 +1,7 @@
-import { UsuarioInvalido, PublicacaoInvalida, EmailInvalido, InteracaoImpossibilitada, EstadoInvalido, PublicacaoNaoAvancada } from "./excecoes";
+import { UsuarioInvalido, PublicacaoExistente, EmailInvalido, InteracaoImpossibilitada, EstadoInvalido, PublicacaoNaoAvancada, PublicacaoDesativada } from "./excecoes";
 import { Usuario } from "./usuario";
 import { Publicacao, PublicacaoAvancada } from "./publicacao";
-import { ordenarDecrescente, listarPublicacoes } from "./methodsUtils";
+import { ordenarDecrescente, listarPublicacoes, listarPublicacoesAtivas, listarPublicacoesArquivadas } from "./methodsUtils";
 import { TipoInteracao, Interacao } from "./interacao";
 
 class RedeSocial{
@@ -9,7 +9,7 @@ class RedeSocial{
     private _publicacoes: Publicacao[] = [];
 
 
-    validarUsuario(idUsuario: string, email: string): boolean {
+    validarUsuario(idUsuario: number, email: string): boolean {
         for (let i = 0; i < this._usuarios.length; i++) {
             if (this._usuarios[i].idUsuario === idUsuario && this._usuarios[i].email === email) {
                 throw new UsuarioInvalido("\n> Usuario e/ou e-mail já existentes !!\n");
@@ -24,7 +24,7 @@ class RedeSocial{
         }
     }
     
-    consultarUsuarioId(idUsuario: string): Usuario {
+    consultarUsuarioId(idUsuario: number): Usuario {
         for (let i = 0; i < this._usuarios.length; i++) {
             if (this._usuarios[i].idUsuario === idUsuario) {
                 return this._usuarios[i];
@@ -42,13 +42,13 @@ class RedeSocial{
         throw new EmailInvalido("\n> E-mail nao existente !!\n");
     }
     
-    validarPubli(idPubli: string): boolean{
+    validarPubli(idPubli: number): boolean{
         for (let i = 0; i < this._publicacoes.length; i++) {
             if (this._publicacoes[i].idPublicacao === idPubli) {
-                return true;
+                throw new PublicacaoExistente("\n> Publicacao ja existente !!\n");
             }
         }
-        throw new PublicacaoInvalida("\n> Publicacao invalida !!\n");
+        return true;
     }
     
     incluirPubli(publicacao: Publicacao): void{
@@ -58,13 +58,13 @@ class RedeSocial{
 
     }
 
-    consultarPubli(idPubli: string): Publicacao {
+    consultarPubli(idPubli: number): Publicacao {
         for (let i = 0; i < this._publicacoes.length; i++) {
             if (this._publicacoes[i].idPublicacao === idPubli) {
                 return this._publicacoes[i];
             }
         }
-        throw new PublicacaoInvalida("\n> Publicacao nao existente !!\n");
+        throw new PublicacaoExistente("\n> Publicacao nao existente !!\n");
     }
 
     exibirPublicacoesOrdenadas(): void {
@@ -78,9 +78,19 @@ class RedeSocial{
         return ordenarDecrescente(publicacoesUsuario);
     }
 
-    exibirPublicacoesUsuario(usuario: Usuario): void {
+    exibirTodasPublicacoesUsuario(usuario: Usuario): void {
         const publisUsuarios = this.buscarPublicacoesPorUsuario(usuario);
         listarPublicacoes(publisUsuarios);
+    }
+    
+    exibirAtivasPublicacoesUsuario(usuario: Usuario): void {
+        const publisUsuarios = this.buscarPublicacoesPorUsuario(usuario);
+        listarPublicacoesAtivas(publisUsuarios);
+    }
+    
+    exibirArquivadasPublicacoesUsuario(usuario: Usuario): void {
+        const publisUsuarios = this.buscarPublicacoesPorUsuario(usuario);
+        listarPublicacoesArquivadas(publisUsuarios);
     }
 
     reagir(usuario: Usuario, publicacao: Publicacao, tipoInteracao: TipoInteracao): void {
@@ -92,21 +102,31 @@ class RedeSocial{
         publicacao.adicionarInteracao(interacao);
     }
 
-    alterarEstado(novoEstado: boolean, idPublicacao: string){
-        let publicacao = this.consultarPubli(idPublicacao);
+    alterarEstado(novoEstado: boolean, publicacao: Publicacao){
         if(novoEstado === publicacao.estadoAtual){
             throw new EstadoInvalido('\nPublicacao ja encontra-se nesse estado !!');
         }
         publicacao.setEstadoAtual = novoEstado;
+        console.log('\n> Status de Publicacao alterado com sucesso !');
     }
 
-    exibirAnalise(idPublicacao: string){
+    exibirAnalise(idPublicacao: number){
         let publicacao = this.consultarPubli(idPublicacao);
         if(!(publicacao instanceof PublicacaoAvancada)){
-            throw new PublicacaoNaoAvancada('\nNão é uma publicacao avancada, nao tem interacoes !')
+            throw new PublicacaoNaoAvancada('\nNao eh uma publicacao avancada, nao tem interacoes !')
         }
         let analise = publicacao.analisarEngajamento();
         console.log(analise);
+    }
+
+    editarPublicacao(idPublicacao: number, novoConteudo: string): void {
+        let publicacao = this.consultarPubli(idPublicacao);
+        if (!(publicacao instanceof Publicacao)) {
+            throw new PublicacaoExistente("\n> Publicacao nao existente !!\n");
+        }else if(!publicacao.estadoAtual){
+            throw new PublicacaoDesativada("\n> Publicacao Oculta, nao pode ser editada !!\n");
+        }
+        publicacao.setConteudo = novoConteudo;
     }
 
 
@@ -117,7 +137,6 @@ class RedeSocial{
     get publicacoes(): Publicacao[]{
         return this._publicacoes;
     }
-
     
 }
 
