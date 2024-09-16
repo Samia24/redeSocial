@@ -10,6 +10,12 @@ class UsuarioInvalido extends AplicacaoError{
     }
 }
 
+class UsuarioExistente extends AplicacaoError{
+    constructor(message: string) {
+        super(message);
+    }
+}
+
 class EmailInvalido extends AplicacaoError{
     constructor(message: string) {
         super(message);
@@ -63,4 +69,4 @@ class UsuariosInexistentes extends AplicacaoError{
     }
 }
 
-export{AplicacaoError, UsuarioInvalido, PublicacaoExistente, EmailInvalido, InteracaoExistente, InteracaoImpossibilitada, EstadoInvalido, PublicacaoNaoAvancada, PublicacaoDesativada, PublicacoesInexistentes, UsuariosInexistentes};
+export{AplicacaoError, UsuarioInvalido, UsuarioExistente, PublicacaoExistente, EmailInvalido, InteracaoExistente, InteracaoImpossibilitada, EstadoInvalido, PublicacaoNaoAvancada, PublicacaoDesativada, PublicacoesInexistentes, UsuariosInexistentes};

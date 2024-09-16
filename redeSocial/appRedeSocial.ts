@@ -5,7 +5,6 @@ import { AplicacaoError, InteracaoImpossibilitada, PublicacaoNaoAvancada, Usuari
 import { Usuario } from './usuario';
 import { limparTela, listarPublicacoes, listarPublicacoesArquivadas, listarPublicacoesAtivas, listarUsuarios } from './methodsUtils';
 import { Publicacao, PublicacaoAvancada } from './publicacao';
-import { Interacao } from './interacao';
 
 class AppRedeSocial{
     private _redeSocial: RedeSocial;
@@ -92,15 +91,14 @@ class AppRedeSocial{
                         limparTela();
                         break;
                     }
-                }catch (e) {
-                    console.log((<AplicacaoError>e).message);
-                   // if (e instanceof AplicacaoError) {                       
-                     //   console.log(e.message); // "Ocorreu um erro na aplicação!"
-                    //} else {
-                      //  console.log("Erro desconhecido. Contate o administrador", e);
-                    //}
-                    this.imprimirPressionarEnter();
+            }catch (e) {
+                if (e instanceof AplicacaoError) {                       
+                    console.log(e.message); // "Mostra um erro na aplicação"
+                } else {
+                    console.log("Erro desconhecido. Contate o administrador", e);
                 }
+                this.imprimirPressionarEnter();
+            }
         } while (opcao != 0);
         limparTela();
         console.log('🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸🔸')

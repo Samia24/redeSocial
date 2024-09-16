@@ -1,4 +1,4 @@
-import { UsuarioInvalido, PublicacaoExistente, EmailInvalido, InteracaoImpossibilitada, EstadoInvalido, PublicacaoNaoAvancada, PublicacaoDesativada } from "./excecoes";
+import { UsuarioInvalido, PublicacaoExistente, EmailInvalido, InteracaoImpossibilitada, EstadoInvalido, PublicacaoNaoAvancada, PublicacaoDesativada, UsuarioExistente } from "./excecoes";
 import { Usuario } from "./usuario";
 import { Publicacao, PublicacaoAvancada } from "./publicacao";
 import { ordenarDecrescente, listarPublicacoes, listarPublicacoesAtivas, listarPublicacoesArquivadas } from "./methodsUtils";
@@ -11,8 +11,8 @@ class RedeSocial{
 
     validarUsuario(idUsuario: number, email: string): boolean {
         for (let i = 0; i < this._usuarios.length; i++) {
-            if (this._usuarios[i].idUsuario === idUsuario && this._usuarios[i].email === email) {
-                throw new UsuarioInvalido("\n> Usuario e/ou e-mail já existentes !!\n");
+            if (this._usuarios[i].idUsuario === idUsuario || this._usuarios[i].email === email) {
+                throw new UsuarioExistente("\n> Usuario e/ou e-mail já existentes !!\n");
             }
         }
         return true;
