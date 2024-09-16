@@ -1,6 +1,6 @@
 # Rede Social
 
-> Desenvolvido por: Sâmia, José Vitor e Riquelme <
+> Desenvolvido por: Sâmia, José Vitor e Riquelme 
 
 Este é um projeto de Rede Social desenvolvido para fins de aprendizado. A aplicação inclui funcionalidades básicas como cadastro de usuários, criação de publicações, e análise de engajamento através de interações.
 
