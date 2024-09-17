@@ -2,7 +2,7 @@
 
 > Desenvolvido por: Sâmia, José Vitor e Riquelme 
 
-Este é um projeto de Rede Social desenvolvido para fins de aprendizado e como trabalho final da disciplina e Programação Orientada a Objetos. A aplicação inclui funcionalidades básicas como cadastro de usuários, criação de publicações, e análise de engajamento através de interações.
+Este é um projeto de Rede Social desenvolvido para fins de aprendizado e como trabalho final da disciplina de Programação Orientada a Objetos. A aplicação inclui funcionalidades básicas como cadastro de usuários, criação de publicações, e análise de engajamento através de interações.
 
 ## Funcionalidades
 
